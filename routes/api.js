@@ -63,6 +63,7 @@ module.exports = function (app) {
             issueData.open=data.open ? data.open : true;
             issueData.assigned_to=data.assigned_to ? data.assigned_to : "";
             issueData.status_text=data.status_text ? data.status_text : "";
+            issueData._id = new ObjectId();
             db.collection(project).insertOne(issueData, function(err, issue) {
               if(err) console.error(err);
               res.send(issue.ops[0]);
@@ -85,13 +86,15 @@ module.exports = function (app) {
       if(Object.keys(data).length <= 1) {
         res.status(500).send("no updated field sent");
       }
-      else if(project) {
+      else if(project && data._id && data._id.length == 24) {
+        var issueId = data._id;
+        delete data._id;
         for(const key in data) {
           issueData[key] = data[key];
         }
         issueData.updated_on = new Date().toString();
         connect((db) => {
-          db.collection(project).updateOne({_id: data._id}, {$set: issueData}, {upsert: false}, function(err, issue) {
+          db.collection(project).updateOne({_id: ObjectId(issueId)}, {$set: issueData}, {upsert: false}, function(err, issue) {
           if(err){
             console.error(err);
             res.status(500).send("could not update " + data._id)
@@ -102,6 +105,9 @@ module.exports = function (app) {
         })
         })
       
+      }
+      else {
+        res.status(500).send("cannot find _id in request body")
       }
      
     })

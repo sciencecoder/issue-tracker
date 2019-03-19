@@ -99,7 +99,7 @@ suite('Functional Tests', function() {
     });
     
     suite('PUT /api/issues/{project} => text', function() {
-      
+      //if fields are provided, but no _id is in req.body, put request returns cannot find _id in request body and res.status of 500
       test('No body', function(done) {
          chai.request(server)
         .put('/api/issues/test')
