@@ -65,7 +65,7 @@ module.exports = function (app) {
             issueData.status_text=data.status_text ? data.status_text : "";
             db.collection(project).insertOne(issueData, function(err, issue) {
               if(err) console.error(err);
-              res.send(issue.ops);
+              res.send(issue.ops[0]);
             })
           }
         })
@@ -83,9 +83,9 @@ module.exports = function (app) {
       var data = req.body || {};
       var issueData = {};
       if(Object.keys(data).length <= 1) {
-        res.send("no updated field sent");
+        res.status(500).send("no updated field sent");
       }
-      else if(project && data._id) {
+      else if(project) {
         for(const key in data) {
           issueData[key] = data[key];
         }
@@ -103,9 +103,7 @@ module.exports = function (app) {
         })
       
       }
-      else {
-        res.status(500).send("cannot find project collection name in url params and/or _id in request body");
-      }
+     
     })
     
     .delete(function (req, res){
