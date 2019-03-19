@@ -91,7 +91,7 @@ module.exports = function (app) {
         }
         issueData.updated_on = new Date().toString();
         connect((db) => {
-          db.collection(project).updateOne({_id: data._id}, {$set: issueData}, {upsert: true}, function(err, issue) {
+          db.collection(project).updateOne({_id: data._id}, {$set: issueData}, {upsert: false}, function(err, issue) {
           if(err){
             console.error(err);
             res.status(500).send("could not update " + data._id)
