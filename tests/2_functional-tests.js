@@ -12,6 +12,7 @@ var assert = chai.assert;
 var server = require('../server');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
+var test_id = ObjectId("507f1f77bcf86cd799439011")
 function connect(callback) {
    MongoClient.connect(process.env.DB, function(err, db) {
   if(err) console.error(err);
@@ -63,7 +64,7 @@ suite('Functional Tests', function() {
           issue_title: 'Title1',
           issue_text: 'text',
           created_by: 'Functional Test - Required fields filled in',
-          _id: "00000000000"
+          _id: test_id
         })
         .end(function(err, res){
           //console.log(res.body[0])
@@ -72,8 +73,8 @@ suite('Functional Tests', function() {
           //fill me in too!
           //assert.property() -- property exists
           assert.equal(res.body.issue_title, "Title1", "issue_title present");
-           assert.equal(res.body.issue_text, "text", "issue_text present");
-            assert.equal(res.body.created_by, 
+          assert.equal(res.body.issue_text, "text", "issue_text present");
+          assert.equal(res.body.created_by, 
             "Functional Test - Required fields filled in", "created_by present");
           done();
         });
@@ -103,7 +104,7 @@ suite('Functional Tests', function() {
          chai.request(server)
         .put('/api/issues/test')
         .send({
-          _id: "5c911b14fba3a805ae0428fe"
+          _id: test_id
         })
         .end(function(err, res){
           assert.equal(res.status, 500);
@@ -118,7 +119,7 @@ suite('Functional Tests', function() {
           chai.request(server)
         .put('/api/issues/test')
         .send({
-          _id: "5c911b14fba3a805ae0428fe",
+          _id: test_id,
           status_text: 'changed, updated text value'
         })
         .end(function(err, res){
@@ -134,7 +135,7 @@ suite('Functional Tests', function() {
           chai.request(server)
         .put('/api/issues/test')
         .send({
-          _id: "5c911b14fba3a805ae0428fe",
+          _id: test_id,
           status_text: 'changed, updated text value',
           created_by: "John Templeton"
         })
@@ -228,9 +229,9 @@ suite('Functional Tests', function() {
          chai.request(server)
         .delete('/api/issues/test')
         .send({
-         _id: "00000000000" 
+         _id: test_id 
         }).end(function(err, res) {
-          assert.equal(res.text, "deleted 00000000000");
+          assert.typeOf(res.text, "string");
           done();
         })
       });
